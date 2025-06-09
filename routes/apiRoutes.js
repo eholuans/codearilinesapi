@@ -1,13 +1,11 @@
-// Importando os modelos
+
 const Passageiro = require('../models/Passageiro');
 const Voo = require('../models/Voo');
 const Bilhete = require('../models/Bilhete');
 const Bagagem = require('../models/Bagagem');
 
-// Rotas para busca de passageiro por diferentes métodos
 const buscarPassageiro = async (req, res) => {
   try {
-    // Importante: obter o tipo da query string, não do query
     const tipo = req.query.tipo || req.body.tipo || 'reserva';
     const codigo = req.body.codigo;
     
@@ -25,11 +23,9 @@ const buscarPassageiro = async (req, res) => {
     switch(tipo) {
       case 'documento':
         console.log('Realizando busca por CPF:', codigo);
-        // Busca por CPF na tabela passageiro
         passageiro = await Passageiro.findByCPF(codigo);
         console.log('Resultado da busca por CPF:', passageiro);
         
-        // Se encontrou o passageiro, busca o bilhete mais recente
         if (passageiro) {
           const bilhetes = await Bilhete.findByPassageiro(passageiro.idPassageiro);
           console.log('Bilhetes encontrados:', bilhetes ? bilhetes.length : 0);
@@ -45,7 +41,6 @@ const buscarPassageiro = async (req, res) => {
       case 'reserva':
       case 'compra':
       case 'eticket':
-        // Para todas as outras opções, busca diretamente pelo idBilhete
         bilhete = await Bilhete.findByIdWithDetails(codigo);
         if (bilhete) {
           passageiro = await Passageiro.findById(bilhete.idPassageiro);
@@ -61,7 +56,6 @@ const buscarPassageiro = async (req, res) => {
       return res.status(404).json({ erro: 'Passageiro não encontrado' });
     }
     
-    // Buscar bagagens do passageiro se houver voo
     let bagagens = [];
     if (voo) {
       bagagens = await Bagagem.findByPassageiro(passageiro.idPassageiro);
@@ -80,7 +74,6 @@ const buscarPassageiro = async (req, res) => {
   }
 };
 
-// Rota para registrar nova bagagem
 const registrarBagagem = async (req, res) => {
   try {
     const { idPassageiro, idVoo, peso } = req.body;
@@ -89,7 +82,6 @@ const registrarBagagem = async (req, res) => {
       return res.status(400).json({ erro: 'Dados incompletos' });
     }
     
-    // Verificar se passageiro e voo existem
     const passageiro = await Passageiro.findById(idPassageiro);
     const voo = await Voo.findById(idVoo);
     
@@ -101,7 +93,6 @@ const registrarBagagem = async (req, res) => {
       return res.status(404).json({ erro: 'Voo não encontrado' });
     }
     
-    // Criar nova bagagem
     const novaBagagem = await Bagagem.create({
       idPassageiro,
       idVoo,
@@ -117,7 +108,6 @@ const registrarBagagem = async (req, res) => {
   }
 };
 
-// Rota para atualizar status da bagagem
 const atualizarStatusBagagem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -147,7 +137,6 @@ const atualizarStatusBagagem = async (req, res) => {
   }
 };
 
-// Rota para listar voos
 const listarVoos = async (req, res) => {
   try {
     const voos = await Voo.findAllWithDetails();
