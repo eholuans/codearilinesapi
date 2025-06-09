@@ -55,7 +55,6 @@ app.get('/etiqueta', (req, res) => {
 });
 
 app.get('/codigo', (req, res) => {
-  // Recebe o tipo de código da query string
   const tipo = req.query.tipo || 'reserva';
   res.render('codigo', { tipo });
 });
