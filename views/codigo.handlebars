@@ -1,11 +1,9 @@
 <div class="codigo-container">
-    <!-- Cabeçalho -->
     <header class="header-codigo">
         <h1 class="title-codigo">Procure sua viagem digitando seu <span id="tipo-codigo">código de reserva</span></h1>
         <button class="btn-finalizar">FINALIZAR SESSÃO</button>
     </header>
 
-    <!-- Conteúdo principal -->
     <main class="main-content-codigo">
         <div class="input-container">
             <label for="codigo-input" class="input-label">Digite seu código</label>
@@ -15,11 +13,11 @@
 </div>
 
 <script>
-    // Obter o tipo de código da URL
+
     const urlParams = new URLSearchParams(window.location.search);
     const tipoCodigo = urlParams.get('tipo') || 'reserva';
     
-    // Configurar o título e placeholder de acordo com o tipo
+
     const tipoCodigoElement = document.getElementById('tipo-codigo');
     const codigoInput = document.getElementById('codigo-input');
     
@@ -42,12 +40,12 @@
             break;
     }
     
-    // Adicionar evento para o botão de finalizar sessão
+ 
     document.querySelector('.btn-finalizar').addEventListener('click', function() {
         window.location.href = '/';
     });
     
-    // Adicionar evento para o formulário de busca
+
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.createElement('form');
         form.id = 'form-busca';
@@ -59,20 +57,19 @@
             }
         });
         
-        // Mover o input para dentro do form
+
         const inputContainer = document.querySelector('.input-container');
         const codigoInput = document.getElementById('codigo-input');
         inputContainer.removeChild(codigoInput);
         form.appendChild(codigoInput);
         
-        // Adicionar botão de busca
+
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
         submitBtn.className = 'btn-buscar';
         submitBtn.textContent = 'Buscar';
         form.appendChild(submitBtn);
         
-        // Adicionar o form ao container
         inputContainer.appendChild(form);
     });
 </script>
