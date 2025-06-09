@@ -5,10 +5,9 @@ const path = require('path');
 const { testConnection } = require('./config/database');
 const apiRoutes = require('./routes/apiRoutes');
 
-// Inicializa o app Express
 const app = express();
 
-// Configuração do Handlebars
+
 app.engine('handlebars', engine({
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'views/layouts')
@@ -16,14 +15,14 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middleware para arquivos estáticos
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware para parsing do body
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Testar conexão com o banco de dados
+
 testConnection()
   .then(connected => {
     if (connected) {
@@ -36,13 +35,13 @@ testConnection()
     console.error('Erro ao testar conexão com o banco de dados:', err);
   });
 
-// Rotas de API
+
 app.post('/api/buscar-passageiro', apiRoutes.buscarPassageiro);
 app.post('/api/registrar-bagagem', apiRoutes.registrarBagagem);
 app.put('/api/bagagem/:id/status', apiRoutes.atualizarStatusBagagem);
 app.get('/api/voos', apiRoutes.listarVoos);
 
-// Rotas de visualização
+
 app.get('/', (req, res) => {
   res.render('splash');
 });
@@ -61,12 +60,11 @@ app.get('/codigo', (req, res) => {
   res.render('codigo', { tipo });
 });
 
-// Rota para resultado da busca
+
 app.get('/resultado', (req, res) => {
   res.render('resultado');
 });
 
-// Configuração do servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
