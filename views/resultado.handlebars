@@ -59,7 +59,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Botões de navegação
         document.getElementById('btn-voltar').addEventListener('click', function() {
             window.location.href = '/etiqueta';
         });
@@ -68,7 +67,6 @@
             window.location.href = '/etiqueta';
         });
         
-        // Obter parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
         const tipo = urlParams.get('tipo') || 'reserva';
         const codigo = urlParams.get('codigo');
@@ -79,7 +77,6 @@
             mostrarErro('Código não fornecido');
         }
         
-        // Configurar formulário de bagagem
         document.getElementById('form-bagagem').addEventListener('submit', function(e) {
             e.preventDefault();
             registrarBagagem();
@@ -117,13 +114,11 @@
             return mostrarErro('Passageiro não encontrado');
         }
         
-        // Preencher dados do passageiro
         document.getElementById('dados-passageiro').style.display = 'block';
         document.getElementById('nome-passageiro').textContent = data.passageiro.nome;
         document.getElementById('cpf-passageiro').textContent = data.passageiro.CPF;
         document.getElementById('email-passageiro').textContent = data.passageiro.email;
         
-        // Preencher dados do voo se disponível
         if (data.voo) {
             document.getElementById('dados-voo').style.display = 'block';
             document.getElementById('origem-voo').textContent = data.voo.idAeroportoOrigem;
@@ -131,12 +126,10 @@
             document.getElementById('data-voo').textContent = new Date(data.voo.data_hora_partida).toLocaleString();
             document.getElementById('status-voo').textContent = data.voo.status;
             
-            // Configurar formulário de bagagem
             document.getElementById('dados-bagagem').style.display = 'block';
             document.getElementById('id-passageiro').value = data.passageiro.idPassageiro;
             document.getElementById('id-voo').value = data.voo.idVoo;
             
-            // Listar bagagens se houver
             if (data.bagagens && data.bagagens.length > 0) {
                 const listaBagagens = document.getElementById('lista-bagagens');
                 listaBagagens.innerHTML = '';
@@ -183,7 +176,6 @@
             const data = await response.json();
             alert('Bagagem registrada com sucesso!');
             
-            // Recarregar a página para mostrar a nova bagagem
             window.location.reload();
         } catch (error) {
             console.error('Erro:', error);
