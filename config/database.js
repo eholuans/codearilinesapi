@@ -1,6 +1,5 @@
 const mysql = require('mysql2/promise');
 
-// Criação do pool de conexões com o banco de dados
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -11,7 +10,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Função para testar a conexão
 async function testConnection() {
   try {
     const connection = await pool.getConnection();
