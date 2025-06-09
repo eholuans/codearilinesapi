@@ -1,0 +1,28 @@
+<div class="inicio-container">
+    <div class="logo-container-top">
+        <!-- Placeholder para o logo no topo -->
+        <div class="logo-placeholder">
+            <source srcset="/images/logo.png" type="image/png">
+            <img class="imglogo" src="/images/logo.png" alt="Logo da Aplicação">
+           </div>
+    </div>
+    
+    <!-- Área de toque que ocupa toda a tela -->
+    <a href="#" class="touch-area" id="touch-button">
+        <div class="touch-icon">
+            <source srcset="toque.png" type="image/png">
+            <img class="imgtoque" src="/images/toque.png" alt="Toque aqui" srcset="/images/toque.png 1x">
+            <p class="touch-text">toque na tela</p>
+        </div>
+    </a>
+</div>
+
+<script>
+    // Adicionar evento de clique para toda a área de toque
+    document.getElementById('touch-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Tela tocada!');
+        // Redirecionar para a tela de etiqueta
+        window.location.href = '/etiqueta';
+    });
+</script>

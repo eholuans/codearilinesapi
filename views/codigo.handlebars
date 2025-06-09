@@ -1,0 +1,78 @@
+<div class="codigo-container">
+    <!-- Cabeçalho -->
+    <header class="header-codigo">
+        <h1 class="title-codigo">Procure sua viagem digitando seu <span id="tipo-codigo">código de reserva</span></h1>
+        <button class="btn-finalizar">FINALIZAR SESSÃO</button>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="main-content-codigo">
+        <div class="input-container">
+            <label for="codigo-input" class="input-label">Digite seu código</label>
+            <input type="text" id="codigo-input" class="codigo-input" placeholder="">
+        </div>
+    </main>
+</div>
+
+<script>
+    // Obter o tipo de código da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tipoCodigo = urlParams.get('tipo') || 'reserva';
+    
+    // Configurar o título e placeholder de acordo com o tipo
+    const tipoCodigoElement = document.getElementById('tipo-codigo');
+    const codigoInput = document.getElementById('codigo-input');
+    
+    switch(tipoCodigo) {
+        case 'documento':
+            tipoCodigoElement.textContent = 'documento de identidade';
+            document.title = 'Digite seu documento de identidade';
+            break;
+        case 'reserva':
+            tipoCodigoElement.textContent = 'código de reserva';
+            document.title = 'Digite seu código de reserva';
+            break;
+        case 'compra':
+            tipoCodigoElement.textContent = 'ordem de compra';
+            document.title = 'Digite sua ordem de compra';
+            break;
+        case 'eticket':
+            tipoCodigoElement.textContent = 'número de e-ticket';
+            document.title = 'Digite seu número de e-ticket';
+            break;
+    }
+    
+    // Adicionar evento para o botão de finalizar sessão
+    document.querySelector('.btn-finalizar').addEventListener('click', function() {
+        window.location.href = '/';
+    });
+    
+    // Adicionar evento para o formulário de busca
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.createElement('form');
+        form.id = 'form-busca';
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const codigo = document.getElementById('codigo-input').value;
+            if (codigo) {
+                window.location.href = `/resultado?tipo=${tipoCodigo}&codigo=${codigo}`;
+            }
+        });
+        
+        // Mover o input para dentro do form
+        const inputContainer = document.querySelector('.input-container');
+        const codigoInput = document.getElementById('codigo-input');
+        inputContainer.removeChild(codigoInput);
+        form.appendChild(codigoInput);
+        
+        // Adicionar botão de busca
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.className = 'btn-buscar';
+        submitBtn.textContent = 'Buscar';
+        form.appendChild(submitBtn);
+        
+        // Adicionar o form ao container
+        inputContainer.appendChild(form);
+    });
+</script>

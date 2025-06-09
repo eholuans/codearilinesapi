@@ -1,0 +1,193 @@
+<div class="resultado-container">
+    <header class="header-codigo">
+        <h1 class="title-codigo">Resultado da busca</h1>
+        <button class="btn-finalizar" id="btn-voltar">VOLTAR</button>
+    </header>
+
+    <main class="main-content-resultado">
+        <div id="loading" class="loading">
+            <p>Carregando dados...</p>
+        </div>
+        
+        <div id="erro" class="erro" style="display: none;">
+            <p>Não foi possível encontrar os dados solicitados.</p>
+            <button class="btn-secundario" id="btn-tentar-novamente">Tentar novamente</button>
+        </div>
+        
+        <div id="dados-passageiro" class="dados-container" style="display: none;">
+            <h2>Dados do Passageiro</h2>
+            <div class="dados-content">
+                <p><strong>Nome:</strong> <span id="nome-passageiro">-</span></p>
+                <p><strong>CPF:</strong> <span id="cpf-passageiro">-</span></p>
+                <p><strong>Email:</strong> <span id="email-passageiro">-</span></p>
+            </div>
+        </div>
+        
+        <div id="dados-voo" class="dados-container" style="display: none;">
+            <h2>Dados do Voo</h2>
+            <div class="dados-content">
+                <p><strong>Origem:</strong> <span id="origem-voo">-</span></p>
+                <p><strong>Destino:</strong> <span id="destino-voo">-</span></p>
+                <p><strong>Data/Hora:</strong> <span id="data-voo">-</span></p>
+                <p><strong>Status:</strong> <span id="status-voo">-</span></p>
+            </div>
+        </div>
+        
+        <div id="dados-bagagem" class="dados-container" style="display: none;">
+            <h2>Bagagens</h2>
+            <div class="dados-content" id="lista-bagagens">
+                <p>Nenhuma bagagem registrada.</p>
+            </div>
+            
+            <div class="form-container">
+                <h3>Registrar Nova Bagagem</h3>
+                <form id="form-bagagem">
+                    <input type="hidden" id="id-passageiro" name="idPassageiro">
+                    <input type="hidden" id="id-voo" name="idVoo">
+                    
+                    <div class="form-group">
+                        <label for="peso-bagagem">Peso (kg):</label>
+                        <input type="number" id="peso-bagagem" name="peso" step="0.01" min="0" max="32" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Registrar Bagagem</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Botões de navegação
+        document.getElementById('btn-voltar').addEventListener('click', function() {
+            window.location.href = '/etiqueta';
+        });
+        
+        document.getElementById('btn-tentar-novamente').addEventListener('click', function() {
+            window.location.href = '/etiqueta';
+        });
+        
+        // Obter parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tipo = urlParams.get('tipo') || 'reserva';
+        const codigo = urlParams.get('codigo');
+        
+        if (codigo) {
+            buscarDados(tipo, codigo);
+        } else {
+            mostrarErro('Código não fornecido');
+        }
+        
+        // Configurar formulário de bagagem
+        document.getElementById('form-bagagem').addEventListener('submit', function(e) {
+            e.preventDefault();
+            registrarBagagem();
+        });
+    });
+    
+    async function buscarDados(tipo, codigo) {
+        try {
+            console.log('Frontend - Enviando busca:', { tipo, codigo });
+            const response = await fetch('/api/buscar-passageiro?tipo=' + tipo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ codigo })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Falha ao buscar dados');
+            }
+            
+            const data = await response.json();
+            preencherDados(data);
+        } catch (error) {
+            console.error('Erro:', error);
+            mostrarErro(error.message);
+        }
+    }
+    
+    function preencherDados(data) {
+        // Ocultar loading
+        document.getElementById('loading').style.display = 'none';
+        
+        if (!data.passageiro) {
+            return mostrarErro('Passageiro não encontrado');
+        }
+        
+        // Preencher dados do passageiro
+        document.getElementById('dados-passageiro').style.display = 'block';
+        document.getElementById('nome-passageiro').textContent = data.passageiro.nome;
+        document.getElementById('cpf-passageiro').textContent = data.passageiro.CPF;
+        document.getElementById('email-passageiro').textContent = data.passageiro.email;
+        
+        // Preencher dados do voo se disponível
+        if (data.voo) {
+            document.getElementById('dados-voo').style.display = 'block';
+            document.getElementById('origem-voo').textContent = data.voo.idAeroportoOrigem;
+            document.getElementById('destino-voo').textContent = data.voo.idAeroportoDestino;
+            document.getElementById('data-voo').textContent = new Date(data.voo.data_hora_partida).toLocaleString();
+            document.getElementById('status-voo').textContent = data.voo.status;
+            
+            // Configurar formulário de bagagem
+            document.getElementById('dados-bagagem').style.display = 'block';
+            document.getElementById('id-passageiro').value = data.passageiro.idPassageiro;
+            document.getElementById('id-voo').value = data.voo.idVoo;
+            
+            // Listar bagagens se houver
+            if (data.bagagens && data.bagagens.length > 0) {
+                const listaBagagens = document.getElementById('lista-bagagens');
+                listaBagagens.innerHTML = '';
+                
+                data.bagagens.forEach(bagagem => {
+                    const bagagemItem = document.createElement('div');
+                    bagagemItem.className = 'bagagem-item';
+                    bagagemItem.innerHTML = `
+                        <p><strong>ID:</strong> ${bagagem.idBagagem}</p>
+                        <p><strong>Peso:</strong> ${bagagem.peso} kg</p>
+                        <p><strong>Status:</strong> ${bagagem.status}</p>
+                    `;
+                    listaBagagens.appendChild(bagagemItem);
+                });
+            }
+        }
+    }
+    
+    function mostrarErro(mensagem) {
+        document.getElementById('loading').style.display = 'none';
+        const erro = document.getElementById('erro');
+        erro.style.display = 'block';
+        erro.querySelector('p').textContent = mensagem || 'Não foi possível encontrar os dados solicitados.';
+    }
+    
+    async function registrarBagagem() {
+        const idPassageiro = document.getElementById('id-passageiro').value;
+        const idVoo = document.getElementById('id-voo').value;
+        const peso = document.getElementById('peso-bagagem').value;
+        
+        try {
+            const response = await fetch('/api/registrar-bagagem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idPassageiro, idVoo, peso })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Falha ao registrar bagagem');
+            }
+            
+            const data = await response.json();
+            alert('Bagagem registrada com sucesso!');
+            
+            // Recarregar a página para mostrar a nova bagagem
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao registrar bagagem: ' + error.message);
+        }
+    }
+</script>

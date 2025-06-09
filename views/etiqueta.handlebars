@@ -1,0 +1,49 @@
+<div class="etiqueta-container">
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo-airline">
+                <div class="logo-placeholder">
+                     <source srcset="/images/logo.png" type="image/png">
+                    <img class="imglogoheader" src="/images/logo.png" alt="Logo da Aplicação">
+                </div>
+            </div>
+        </div>
+        <div class="header-buttons">
+            <button class="btn-language">CHANGE LANGUAGE</button>
+            <a href="./" class="btn-finalizar">FINALIZAR SESSÃO</a> 
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="main-content">
+        <h1 class="title">Imprima a etiqueta <span class="title-light">de bagagem</span></h1>
+        
+        <div class="content-columns">
+            <!-- Coluna da esquerda - QR Code -->
+            <div class="left-column">
+                <p class="instruction">
+                    <span class="highlight">Aproxime o código QR</span> do seu cartão de embarque ao <span class="highlight">leitor</span> e pronto. Fácil e rápido.
+                </p>
+                <div class="qr-code-container">
+                    <div class="qr-code-placeholder">
+                        <!-- Placeholder para o QR Code -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coluna da direita - Opções alternativas -->
+            <div class="right-column">
+                <p class="instruction">
+                    Se não tiver seu cartão de embarque ou <span class="highlight">precise comprar bagagem</span>, entre com uma dessas opções:
+                </p>
+                <div class="options-container">
+                    <a href="/codigo?tipo=documento" class="option-btn">Número de documento de identidade</a>
+                    <a href="/codigo?tipo=reserva" class="option-btn">Código de reserva</a>
+                    <a href="/codigo?tipo=compra" class="option-btn">Ordem de compra</a>
+                    <a href="/codigo?tipo=eticket" class="option-btn">Número de e-ticket</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
